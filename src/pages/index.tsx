@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { atom, useAtom } from 'jotai';
 import type { NextPage } from 'next';
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 
 const searchInputTextAtom = atom<string>('');
@@ -19,6 +20,10 @@ const Home: NextPage = ({ data }) => {
 
   return (
     <div>
+      <NextSeo
+        title={`Simple Usage Example ${data.items[0].name}`}
+        description={`A short description goes here. ${data.total_count}`}
+      />
       <div>
         <input type="text" value={searchInputText} onChange={(e) => handleChangeSearchText(e.target.value)} />
         <button type="button" onClick={handlePressSearch}>검색</button>

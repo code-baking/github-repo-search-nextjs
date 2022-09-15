@@ -1,25 +1,51 @@
+import axios from 'axios';
+import { atom, useAtom } from 'jotai';
 import type { NextPage } from 'next';
-import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
-import Login from 'src/components/login/Login';
-import Search from 'src/components/search/Search';
+const searchInputTextAtom = atom<string>('');
 
-const Home: NextPage = () => {
-  const { status } = useSession();
+const Home: NextPage = ({ data }) => {
+  const router = useRouter();
+  const [searchInputText, setSearchInputText] = useAtom(searchInputTextAtom);
 
-  if (status !== 'authenticated') {
-    return (
-      <div>
-        <Login />
-      </div>
-    );
+  const handleChangeSearchText = (text: string) => {
+    setSearchInputText(text);
+  }
+
+  const handlePressSearch = () => {
+    router.push(`?keyword=${searchInputText}`);
   }
 
   return (
     <div>
-      <Search />
+      <div>
+        <input type="text" value={searchInputText} onChange={(e) => handleChangeSearchText(e.target.value)} />
+        <button type="button" onClick={handlePressSearch}>검색</button>
+      </div>
+      <div>
+        <ul>
+          {
+            data?.items?.map(item => (
+              <li>{item.name}</li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  console.log(context.query, '!!!');
+
+  const { data } = await axios.get('https://api.github.com/search/repositories', {
+    params: {
+      q: context.query?.keyword || 'default'
+    }
+  });
+
+  return { props: { data } }
+}
 
 export default Home;

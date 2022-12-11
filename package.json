@@ -17,7 +17,7 @@
     "report:generate": "marge index.json --reportDir public --assetsDir public/assets --reportPageTitle index.html"
   },
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.2.1",
     "cypress-multi-reporters": "^1.6.1",
     "jotai": "^1.8.3",
     "next": "12.2.5",
